@@ -1,5 +1,4 @@
-; QUESTION 01:
-; Please enter any string, replace all instances of "A" with "CC", and display the result on the screen.
+; 第01题：请任意输入一个字符串，将其中A换成CC，并将结果显示在屏幕上。
 ; Coded by: Mosles Signall
 ; Date: 2025-Oct-23
 DATAS SEGMENT
