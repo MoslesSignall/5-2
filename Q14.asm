@@ -1,0 +1,84 @@
+; 第14题：从键盘输入一串可显示字符，以回车符结束，
+; 并按字母、数字、空格分类计数，然后显示出这三类统计的结果
+; Coded by: Mosles Signall
+; Date: 2025-Oct-29
+
+DATAS SEGMENT
+    NUMBER DB 3 DUP(0)
+DATAS ENDS
+
+STACKS SEGMENT
+    DW 100 DUP(?)
+STACKS ENDS
+
+CODES SEGMENT
+    ASSUME CS:CODES,DS:DATAS,SS:STACKS
+START:
+    MOV AX,DATAS
+    MOV DS,AX
+    
+INPUT:
+    MOV AH,1
+    INT 21H
+    CMP AL,0DH
+    JE DISPLAY_READY
+    CMP AL,20H
+    JE ONE_BLANK
+    CMP AL,39H
+    JBE ONE_NUMBER
+    CMP AL,41H
+    JA ONE_CHARACTER
+
+DISPLAY_READY:
+    MOV SI,0
+    MOV BX,10
+DISPLAY:
+    MOV CX,0
+    MOV AL,NUMBER[SI]
+DISPLAY_LOOP:
+	MOV AH,0
+    MOV DX,0
+    DIV BX
+    ADD DX,30H
+    PUSH DX
+    INC CX
+    CMP AL,0
+    JE SHOW
+    JNE DISPLAY_LOOP
+
+SHOW:
+	MOV AH,2
+    POP DX
+    INT 21H
+    LOOP SHOW
+    INC SI
+    MOV DX,10
+    INT 21H
+    MOV DX,0
+    CMP SI,3
+    JNE DISPLAY
+
+EXIT:
+    MOV AH,4CH
+    INT 21H
+
+ONE_CHARACTER:
+    MOV DL,NUMBER[0]
+    INC DL
+    MOV NUMBER[0],DL
+    JMP INPUT
+    
+ONE_NUMBER:
+    MOV DL,NUMBER[1]
+    INC DL
+    MOV NUMBER[1],DL
+    JMP INPUT
+
+ONE_BLANK:
+    MOV DL,NUMBER[2]
+    INC DL
+    MOV NUMBER[2],DL
+    JMP INPUT
+
+CODES ENDS
+    END START
